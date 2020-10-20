@@ -5,7 +5,7 @@
     <artifactId>manageServer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>com.simplemall.micro.serv.base</groupId>
+  <groupId>com.manageServer.serv.base</groupId>
   <artifactId>base-serv</artifactId>
   <packaging>pom</packaging>
   <modules>

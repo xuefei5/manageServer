@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.simplemall.micro.serv</groupId>
-		<artifactId>simplemall-proj</artifactId>
+		<groupId>com.manageServer.serv</groupId>
+		<artifactId>manageServer</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.simplemall.micro.serv.order</groupId>
+	<groupId>com.manageServer.serv.order</groupId>
 	<artifactId>order-service</artifactId>
 	<name>orderServ</name>
 	<description>订单服务</description>
@@ -113,15 +113,15 @@
 			<artifactId>druid-spring-boot-starter</artifactId>
 			<version>1.1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.github.ulisesbocchio</groupId>
 			<artifactId>jasypt-spring-boot-starter</artifactId>
 			<version>1.14</version>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>com.simplemall.micro.serv.common</groupId>
+			<groupId>com.manageServer.serv.common</groupId>
 			<artifactId>common-module</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

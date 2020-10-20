@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.simplemall.micro.serv</groupId>
-		<artifactId>simplemall-proj</artifactId>
+		<groupId>com.manageServer.serv</groupId>
+		<artifactId>manageServer</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.simplemall.micro.serv.msg</groupId>
+	<groupId>com.manageServer.serv.msg</groupId>
 	<artifactId>msg-service</artifactId>
 	<name>messageServ</name>
 	<description>消息处理服务</description>
@@ -133,7 +133,7 @@
 			<version>1.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.simplemall.micro.serv.common</groupId>
+			<groupId>com.manageServer.serv.common</groupId>
 			<artifactId>common-module</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -168,14 +168,14 @@
 					</configurationFile>
 					<overwrite>true</overwrite>
 				</configuration>
-				<dependencies>
-					<!-- https://github.com/backkoms/mybatis-generator-comments -->
+				<!--<dependencies>
+					&lt;!&ndash; https://github.com/backkoms/mybatis-generator-comments &ndash;&gt;
 					<dependency>
 						<groupId>com.zhishi.mybatis</groupId>
 						<artifactId>mybatis-generator-core</artifactId>
 						<version>1.0.1</version>
 					</dependency>
-				</dependencies>
+				</dependencies>-->
 			</plugin>
 		</plugins>
 	</build>

@@ -14,11 +14,11 @@
 		</plugins>
 	</build>
 	<parent>
-		<groupId>com.simplemall.micro.serv</groupId>
-		<artifactId>simplemall-proj</artifactId>
+		<groupId>com.manageServer.serv</groupId>
+		<artifactId>manageServer</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.simplemall.micro.serv.common</groupId>
+	<groupId>com.manageServer.serv.common</groupId>
 	<artifactId>common-module</artifactId>
 
 	<dependencies>
