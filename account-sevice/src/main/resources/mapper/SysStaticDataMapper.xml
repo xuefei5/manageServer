@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplemall.account.dal.SysStaticDataMapper">
+
+	<!-- 重复校验 sql语句 -->
+	<select id="duplicateCheckCountSql" resultType="Long" parameterType="com.simplemall.micro.serv.common.vo.DuplicateCheckVo">
+		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal} and id &lt;&gt; #{dataId}
+	</select>
+
+	<!-- 重复校验 sql语句 -->
+	<select id="duplicateCheckCountSqlNoDataId" resultType="Long" parameterType="com.simplemall.micro.serv.common.vo.DuplicateCheckVo">
+		SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal}
+	</select>
+
+</mapper>

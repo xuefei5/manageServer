@@ -2,6 +2,7 @@ package com.simplemall.account.config;
 
 import javax.sql.DataSource;
 
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -18,22 +19,22 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 @Configuration
 @EnableTransactionManagement
 @MapperScan("com.simplemall.account.dal")
-public class SqlSessionFactoryConfig implements TransactionManagementConfigurer {
+public class SqlSessionFactoryConfig /*implements TransactionManagementConfigurer*/ {
 
-    @Autowired
+/*    @Autowired
     private DataSource dataSource;
 
     @Autowired
     private DataSourceProperties dataSourceProperties;
 
-    /**
-     * 创建sqlSessionFactoryBean 
+    *//**
+     * 创建sqlSessionFactoryBean
      * @return
      * @throws Exception
-     */
+     *//*
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory createSqlSessionFactoryBean() throws Exception {
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        MybatisSqlSessionFactoryBean bean = new MybatisSqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setTypeAliasesPackage(dataSourceProperties.getTypeAliasPackage());
 
@@ -52,5 +53,5 @@ public class SqlSessionFactoryConfig implements TransactionManagementConfigurer 
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return new DataSourceTransactionManager(dataSource);
-    }
+    }*/
 }

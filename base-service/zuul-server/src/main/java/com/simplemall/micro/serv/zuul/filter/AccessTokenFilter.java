@@ -3,6 +3,8 @@ package com.simplemall.micro.serv.zuul.filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.simplemall.micro.serv.zuul.util.ServletRequestUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+
+import java.util.HashMap;
 
 /**
  * token过滤器，校验token必输项方法，token不能为空
@@ -57,17 +61,27 @@ public class AccessTokenFilter extends ZuulFilter {
 			return null;
 		}
         log.info(String.format("%s >>> %s", method, reqUrl));
+		//modif xuefei 获取token方式改变
         Object accessToken = request.getParameter("token");
-        if(accessToken == null) {
-            log.warn("token is empty");
-            ctx.setSendZuulResponse(false);
-            ctx.setResponseStatusCode(401);
-            try {
-                ctx.getResponse().getWriter().write("token is empty");
-            }catch (Exception e){}
+        if(null == accessToken) {
+			try {
+				HashMap reqMap = ServletRequestUtil.getJson(request.getInputStream());
+				accessToken = reqMap.get("token");
+			}catch(Exception e){
+					log.error("获取token异常" + e.getMessage());
+			}
+		}
+		if(accessToken == null) {
+			log.warn("token is empty");
+			ctx.setSendZuulResponse(false);
+			ctx.setResponseStatusCode(500);
+			try {
+				ctx.getResponse().getWriter().write("token不允许为空!");
+			}catch (Exception e){}
 
-            return null;
-        }
+			return null;
+		}
+
         log.info("ok");
         return null;
 	}

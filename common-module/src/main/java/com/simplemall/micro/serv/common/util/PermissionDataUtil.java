@@ -1,7 +1,8 @@
 package com.simplemall.micro.serv.common.util;
 
 
-import com.simplemall.micro.serv.common.bean.order.model.SysPermission;
+
+import com.simplemall.micro.serv.common.bean.account.SysPermission;
 
 import java.util.List;
 
