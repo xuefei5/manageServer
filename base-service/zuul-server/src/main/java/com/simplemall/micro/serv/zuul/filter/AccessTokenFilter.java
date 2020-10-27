@@ -62,15 +62,7 @@ public class AccessTokenFilter extends ZuulFilter {
 		}
         log.info(String.format("%s >>> %s", method, reqUrl));
 		//modif xuefei 获取token方式改变
-        Object accessToken = request.getParameter("token");
-        if(null == accessToken) {
-			try {
-				HashMap reqMap = ServletRequestUtil.getJson(request.getInputStream());
-				accessToken = reqMap.get("token");
-			}catch(Exception e){
-					log.error("获取token异常" + e.getMessage());
-			}
-		}
+        Object accessToken = request.getHeader("X-Access-Token");
 		if(accessToken == null) {
 			log.warn("token is empty");
 			ctx.setSendZuulResponse(false);
