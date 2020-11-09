@@ -8,7 +8,7 @@ package com.simplemall.micro.serv.common.service;
  */
 public class RedisConfig {
 
-	public static final String REDIS_IP = "192.168.72.130";
+	public static final String REDIS_IP = "39.104.93.182";
 
 	public static final String AUTH = "a588a026b91c424cb7fa13267eb80e96";
 
