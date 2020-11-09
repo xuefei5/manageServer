@@ -43,6 +43,14 @@ public class ZknhWeChatConfigController {
     @Autowired
     private IZknhVillageModelService zknhVillageModelService;
 
+    @RequestMapping(value = "/getWeChatMainBack", method = RequestMethod.GET)
+    public Result<String> queryWeChatMainBack() throws Exception{
+
+        ZknhMainConfig zknhMainConfig = zknhMainConfigService.getWechatMainBack();
+
+        return Result.OK(zknhMainConfig.getModalIcon());
+
+    }
     /**
      * 后台管理系统查询-分页
      * @param zknhMainConfig
