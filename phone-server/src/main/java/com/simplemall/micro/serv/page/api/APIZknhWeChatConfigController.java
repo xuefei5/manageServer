@@ -1,6 +1,7 @@
 package com.simplemall.micro.serv.page.api;
 
 import com.simplemall.micro.serv.common.bean.Result;
+import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
 import com.simplemall.micro.serv.page.client.ZknhWeChatConFeignClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,13 @@ public class APIZknhWeChatConfigController {
     @RequestMapping(value = "getWeChatMainBack", method = RequestMethod.GET)
     public Result<String> getWeChatMainBack() {
         return zknhWeChatConFeignClient.getWeChatMainBack();
+    }
+
+    @ApiOperation(value = "获取微信公众号首页背景图")
+    @RequestMapping(value = "getWeChatMainModel", method = RequestMethod.GET)
+    public Result<List<ZknhMainConfig>> getWeChatMainModel() {
+
+        return zknhWeChatConFeignClient.getWeChatMainModel();
     }
 
 }

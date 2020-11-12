@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper, ZknhMainConfig> implements IZknhMainConfigService {
@@ -18,5 +20,11 @@ public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper,
     public ZknhMainConfig getWechatMainBack() {
 
         return zknhMainConfigMapper.getWechatMainBack();
+    }
+
+    @Override
+    public List<ZknhMainConfig> getWeChatMainModel() {
+
+        return zknhMainConfigMapper.getWeChatMainModel();
     }
 }

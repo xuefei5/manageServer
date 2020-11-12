@@ -2,9 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.simplemall.account.dal.ZknhMainConfigMapper">
 
-    <!-- 查询全部商品信息-->
     <select id="getWechatMainBack" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
 		select * from  zknh_main_config where modal_type = '3';
+	</select>
+
+    <select id="getWeChatMainModel" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
+		select * from  zknh_main_config where modal_type in(1,2) order by sort asc;
 	</select>
 
 </mapper>

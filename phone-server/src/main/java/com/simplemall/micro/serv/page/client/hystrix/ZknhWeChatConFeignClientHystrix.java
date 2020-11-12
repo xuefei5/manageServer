@@ -1,9 +1,11 @@
 package com.simplemall.micro.serv.page.client.hystrix;
 
 import com.simplemall.micro.serv.common.bean.Result;
+import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
 import com.simplemall.micro.serv.page.client.ZknhWeChatConFeignClient;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,12 @@ public class ZknhWeChatConFeignClientHystrix implements ZknhWeChatConFeignClient
 	public Result<String> getWeChatMainBack() {
 
 		return new Result<String>();
+	}
+
+	@Override
+	public Result<List<ZknhMainConfig>> getWeChatMainModel() {
+
+		return  Result.OK();
 	}
 
 }

@@ -43,12 +43,31 @@ public class ZknhWeChatConfigController {
     @Autowired
     private IZknhVillageModelService zknhVillageModelService;
 
+    /**
+     * 微信端-查询主页背景图片服务
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/getWeChatMainBack", method = RequestMethod.GET)
     public Result<String> queryWeChatMainBack() throws Exception{
 
         ZknhMainConfig zknhMainConfig = zknhMainConfigService.getWechatMainBack();
 
         return Result.OK(zknhMainConfig.getModalIcon());
+
+    }
+
+    /**
+     * 微信端-查询主页模块
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getWeChatMainModel", method = RequestMethod.GET)
+    public Result<List<ZknhMainConfig>> queryWeChatMainModel() throws Exception{
+
+        List<ZknhMainConfig> retList =zknhMainConfigService.getWeChatMainModel();
+
+        return Result.OK(retList);
 
     }
     /**

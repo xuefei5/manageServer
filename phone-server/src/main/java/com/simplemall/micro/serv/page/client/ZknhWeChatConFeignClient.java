@@ -1,6 +1,7 @@
 package com.simplemall.micro.serv.page.client;
 
 import com.simplemall.micro.serv.common.bean.Result;
+import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
 import com.simplemall.micro.serv.page.client.hystrix.ZknhWeChatConFeignClientHystrix;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
@@ -22,5 +23,8 @@ public interface ZknhWeChatConFeignClient {
 
 	@RequestMapping(value = "/zknh_wechat_config/getWeChatMainBack",method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Result<String> getWeChatMainBack();
+
+	@RequestMapping(value = "/zknh_wechat_config/getWeChatMainModel",method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Result<List<ZknhMainConfig>> getWeChatMainModel();
 
 }
