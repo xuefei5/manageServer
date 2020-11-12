@@ -35,6 +35,9 @@ public class ZknhMainConfig implements Serializable {
     @Excel(name = "图标", width = 255)
     private String modalIcon;
 
+    @Excel(name = "图标类型")
+    private int iconType;
+
     @Excel(name = "链接地址", width = 255)
     private String modalUrl;
 
