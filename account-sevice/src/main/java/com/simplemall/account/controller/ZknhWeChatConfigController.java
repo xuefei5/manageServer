@@ -11,6 +11,7 @@ import com.simplemall.account.service.IZknhVillageDetailService;
 import com.simplemall.account.service.IZknhVillageModelService;
 import com.simplemall.micro.serv.common.bean.Result;
 import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig;
 import com.simplemall.micro.serv.common.constant.CommonConstant;
 import com.simplemall.micro.serv.common.system.query.QueryGenerator;
 import com.simplemall.micro.serv.common.util.JwtUtil;
@@ -80,6 +81,20 @@ public class ZknhWeChatConfigController {
     public Result<List<ZknhMainConfig>> queryWeChatMainModel() throws Exception{
 
         List<ZknhMainConfig> retList =zknhMainConfigService.getWeChatMainModel();
+
+        return Result.OK(retList);
+
+    }
+
+    /**
+     * 村集体列表查询
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/queryVillageList", method = RequestMethod.GET)
+    public Result<List<ZknhVillageConfig>> queryVillageList() throws Exception{
+
+        List<ZknhVillageConfig> retList = zknhVillageConfigService.getVillageList();
 
         return Result.OK(retList);
 

@@ -30,7 +30,7 @@ public class ZknhVillageConfig implements Serializable {
     private String villageName;
 
     @Excel(name = "村庄背景图片", width = 255)
-    private int villageBack;
+    private String villageBack;
 
     @Excel(name = "村庄logo", width = 255)
     private String villageMainImg;

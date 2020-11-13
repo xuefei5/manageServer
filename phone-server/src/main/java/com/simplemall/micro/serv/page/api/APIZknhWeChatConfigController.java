@@ -2,6 +2,7 @@ package com.simplemall.micro.serv.page.api;
 
 import com.simplemall.micro.serv.common.bean.Result;
 import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig;
 import com.simplemall.micro.serv.page.client.ZknhWeChatConFeignClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,4 +46,11 @@ public class APIZknhWeChatConfigController {
         return zknhWeChatConFeignClient.getWeChatMainLeftImg();
     }
 
+    @ApiOperation(value = "获取村集体列表")
+    @RequestMapping(value = "queryVillageList", method = RequestMethod.GET)
+    public Result<List<ZknhVillageConfig>> queryVillageList(){
+
+        return zknhWeChatConFeignClient.queryVillageList();
+    }
 }
+

@@ -2,6 +2,7 @@ package com.simplemall.micro.serv.page.client.hystrix;
 
 import com.simplemall.micro.serv.common.bean.Result;
 import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig;
 import com.simplemall.micro.serv.page.client.ZknhWeChatConFeignClient;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,12 @@ public class ZknhWeChatConFeignClientHystrix implements ZknhWeChatConFeignClient
 	public Result<String> getWeChatMainLeftImg() {
 
 		return new Result<String>();
+	}
+
+	@Override
+	public Result<List<ZknhVillageConfig>> queryVillageList() {
+
+		return  Result.OK();
 	}
 
 }
