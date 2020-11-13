@@ -28,4 +28,10 @@ public class ZknhWeChatConFeignClientHystrix implements ZknhWeChatConFeignClient
 		return  Result.OK();
 	}
 
+	@Override
+	public Result<String> getWeChatMainLeftImg() {
+
+		return new Result<String>();
+	}
+
 }

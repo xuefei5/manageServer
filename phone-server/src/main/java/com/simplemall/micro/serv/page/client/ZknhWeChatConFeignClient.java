@@ -27,4 +27,7 @@ public interface ZknhWeChatConFeignClient {
 	@RequestMapping(value = "/zknh_wechat_config/getWeChatMainModel",method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Result<List<ZknhMainConfig>> getWeChatMainModel();
 
+	@RequestMapping(value = "/zknh_wechat_config/getWeChatMainLeftImg",method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Result<String> getWeChatMainLeftImg();
+
 }

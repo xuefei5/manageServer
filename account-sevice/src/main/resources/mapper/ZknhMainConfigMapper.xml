@@ -6,6 +6,10 @@
 		select * from  zknh_main_config where modal_type = '3';
 	</select>
 
+	<select id="getWeChatMainLeftImg" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
+		select * from  zknh_main_config where modal_type = '4';
+	</select>
+
     <select id="getWeChatMainModel" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
 		select * from  zknh_main_config where modal_type in(1,2) order by sort asc;
 	</select>

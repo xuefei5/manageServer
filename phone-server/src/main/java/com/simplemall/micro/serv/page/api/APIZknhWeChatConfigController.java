@@ -32,11 +32,17 @@ public class APIZknhWeChatConfigController {
         return zknhWeChatConFeignClient.getWeChatMainBack();
     }
 
-    @ApiOperation(value = "获取微信公众号首页背景图")
+    @ApiOperation(value = "获取微信公众号首页模块")
     @RequestMapping(value = "getWeChatMainModel", method = RequestMethod.GET)
     public Result<List<ZknhMainConfig>> getWeChatMainModel() {
 
         return zknhWeChatConFeignClient.getWeChatMainModel();
+    }
+
+    @ApiOperation(value = "获取微信公众号首页左上角图片")
+    @RequestMapping(value = "getWeChatMainLeftImg", method = RequestMethod.GET)
+    public Result<String> getWeChatMainLeftImg() {
+        return zknhWeChatConFeignClient.getWeChatMainLeftImg();
     }
 
 }

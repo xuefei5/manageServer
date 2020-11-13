@@ -58,6 +58,20 @@ public class ZknhWeChatConfigController {
     }
 
     /**
+     * 微信端-查询主页左上角图片服务
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getWeChatMainLeftImg", method = RequestMethod.GET)
+    public Result<String> queryWeChatMainLeftImg() throws Exception{
+
+        ZknhMainConfig zknhMainConfig = zknhMainConfigService.getWeChatMainLeftImg();
+
+        return Result.OK(zknhMainConfig.getModalIcon());
+
+    }
+
+    /**
      * 微信端-查询主页模块
      * @return
      * @throws Exception

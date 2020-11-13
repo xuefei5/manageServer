@@ -13,6 +13,12 @@ public interface ZknhMainConfigMapper extends BaseMapper<ZknhMainConfig> {
      */
     public ZknhMainConfig getWechatMainBack();
 
+    /**
+     * 查询左上角背景图
+     * @return
+     */
+    public ZknhMainConfig getWeChatMainLeftImg();
+
     public List<ZknhMainConfig> getWeChatMainModel();
 
 

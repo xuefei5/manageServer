@@ -14,6 +14,12 @@ public interface IZknhMainConfigService extends IService<ZknhMainConfig> {
     public ZknhMainConfig getWechatMainBack();
 
     /**
+     * 查询微信主页左上角图片
+     * @return
+     */
+    public ZknhMainConfig getWeChatMainLeftImg();
+
+    /**
      * 查询微信主页模块
      * @return
      */

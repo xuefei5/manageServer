@@ -23,6 +23,12 @@ public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper,
     }
 
     @Override
+    public ZknhMainConfig getWeChatMainLeftImg() {
+
+        return zknhMainConfigMapper.getWeChatMainLeftImg();
+    }
+
+    @Override
     public List<ZknhMainConfig> getWeChatMainModel() {
 
         return zknhMainConfigMapper.getWeChatMainModel();
