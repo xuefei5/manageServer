@@ -12,6 +12,8 @@ import com.simplemall.account.service.IZknhVillageModelService;
 import com.simplemall.micro.serv.common.bean.Result;
 import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
 import com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageDetail;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageModel;
 import com.simplemall.micro.serv.common.constant.CommonConstant;
 import com.simplemall.micro.serv.common.system.query.QueryGenerator;
 import com.simplemall.micro.serv.common.util.JwtUtil;
@@ -98,6 +100,34 @@ public class ZknhWeChatConfigController {
 
         return Result.OK(retList);
 
+    }
+
+    /**
+     * 根据村庄ID查询模块
+     * @param villageId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/queryVillageModelById", method = RequestMethod.GET)
+    public Result<List<ZknhVillageModel>> queryVillageModelById(@RequestParam(name="id",defaultValue = "") String villageId) throws Exception{
+
+        List<ZknhVillageModel> retList = zknhVillageModelService.getVillageModelByVillageId(villageId);
+
+        return Result.OK(retList);
+    }
+
+    /**
+     * 根据模块ID查询模块详细信息
+     * @param modelId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/queryVillageDetailByModelId", method = RequestMethod.GET)
+    public Result<List<ZknhVillageDetail>> queryVillageDetailByModelId(@RequestParam(name="modelId",defaultValue = "") String modelId) throws Exception{
+
+        List<ZknhVillageDetail> retList = zknhVillageDetailService.getVillageDetailByModelId(modelId);
+
+        return Result.OK(retList);
     }
     /**
      * 后台管理系统查询-分页

@@ -3,6 +3,8 @@ package com.simplemall.micro.serv.page.client.hystrix;
 import com.simplemall.micro.serv.common.bean.Result;
 import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
 import com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageDetail;
+import com.simplemall.micro.serv.common.bean.account.ZknhVillageModel;
 import com.simplemall.micro.serv.page.client.ZknhWeChatConFeignClient;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,18 @@ public class ZknhWeChatConFeignClientHystrix implements ZknhWeChatConFeignClient
 
 	@Override
 	public Result<List<ZknhVillageConfig>> queryVillageList() {
+
+		return  Result.OK();
+	}
+
+	@Override
+	public Result<List<ZknhVillageModel>> queryVillageModelById(String villageId) {
+
+		return  Result.OK();
+	}
+
+	@Override
+	public Result<List<ZknhVillageDetail>> queryVillageDetailByModelId(String modelId) {
 
 		return  Result.OK();
 	}

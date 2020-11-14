@@ -31,7 +31,7 @@ public class ZknhVillageModel implements Serializable {
     private String modelName;
 
     @Excel(name = "模块标题图片", width = 255)
-    private int modelImg;
+    private String modelImg;
 
     @Excel(name = "排序")
     private int modelSort;

@@ -3,10 +3,14 @@ package com.simplemall.micro.serv.common.bean.account;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 准康农惠微信村庄详情
@@ -51,4 +55,47 @@ public class ZknhVillageDetail implements Serializable {
 
     @Excel(name = "模块详情介绍字段10", width = 1000)
     private String content10;
+
+    @Excel(name = "排序")
+    private int sort;
+
+    public String get(int key){
+        String ret = "";
+        switch (key){
+            case 1:
+                ret = getContent1();
+                break;
+            case 2:
+                ret = getContent2();
+                break;
+            case 3:
+                ret = getContent3();
+                break;
+            case 4:
+                ret = getContent4();
+                break;
+            case 5:
+                ret = getContent5();
+                break;
+            case 6:
+                ret = getContent6();
+                break;
+            case 7:
+                ret = getContent7();
+                break;
+            case 8:
+                ret = getContent8();
+                break;
+            case 9:
+                ret = getContent9();
+                break;
+            case 10:
+                ret = getContent10();
+                break;
+            default:
+                ret = "";
+                break;
+        }
+        return ret;
+    }
 }
