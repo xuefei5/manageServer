@@ -204,5 +204,28 @@ public class ZknhWeChatConfigController {
         return result;
     }
 
-
+    /**
+     * 导航页背景图设置
+     * @return
+     * @throws Exception
+     * @author wangshun
+     */
+    @RequestMapping(value = "/wechatMainUpdate", method = RequestMethod.POST)
+    public Result<Object> updateModify(@RequestBody JSONObject jsonObject) throws Exception{
+        Result<Object> result = new Result<>();
+        String url = jsonObject.getString("url");
+        if(url == null || "".equals(url)){
+            result.error500("获取url为空");
+            return result;
+        }
+        int i = zknhMainConfigService.updateModify(url);
+        if(i==1){
+            result.success("成功");
+            result.setResult("0");
+        }else {
+            result.error500("失败");
+            result.setResult("1");
+        }
+        return result;
+    }
 }

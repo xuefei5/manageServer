@@ -33,4 +33,9 @@ public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper,
 
         return zknhMainConfigMapper.getWeChatMainModel();
     }
+    /*修改微信背景图*/
+    public int updateModify(String url) {
+
+        return zknhMainConfigMapper.updateModify(url);
+    }
 }
