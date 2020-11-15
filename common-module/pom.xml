@@ -111,6 +111,12 @@
 			<version>2.6</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.7.2</version>
+		</dependency>
+
 		<!--集成springmvc框架并实现自动配置 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
