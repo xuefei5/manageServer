@@ -24,4 +24,7 @@ public interface IZknhMainConfigService extends IService<ZknhMainConfig> {
      * @return
      */
     public List<ZknhMainConfig> getWeChatMainModel();
+
+    /* 修改微信背景图*/
+    public int updateModify(String url);
 }

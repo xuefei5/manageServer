@@ -13,5 +13,8 @@
     <select id="getWeChatMainModel" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
 		select * from  zknh_main_config where modal_type in(1,2) order by sort asc;
 	</select>
-
+	<!-- 修改主页背景图-->
+	<update id = "updateModify">
+    update zknh_main_config set modal_url = #{url} where modal_type = '3';
+    </update>
 </mapper>
