@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.simplemall.account.dal.ZknhVillageConfigMapper">
 
+	<select id="getVillagesList" resultType="com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig">
+		select * from  zknh_village_config where village_type='1' order by sort asc;
+	</select>
+
     <select id="getVillageList" resultType="com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig">
-		select * from  zknh_village_config order by sort asc;
+		select * from  zknh_village_config where village_parent_id=#{villageId} and village_type='2'  order by sort asc;
 	</select>
 
 </mapper>

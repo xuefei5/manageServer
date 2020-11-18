@@ -16,9 +16,16 @@ public class ZknhVillageConfigServiceImpl extends ServiceImpl<ZknhVillageConfigM
 
     @Autowired
     ZknhVillageConfigMapper zknhVillageConfigMapper;
-    @Override
-    public List<ZknhVillageConfig> getVillageList() throws Exception {
 
-        return zknhVillageConfigMapper.getVillageList();
+    @Override
+    public List<ZknhVillageConfig> getVillagesList() throws Exception {
+
+        return zknhVillageConfigMapper.getVillagesList();
+    }
+
+    @Override
+    public List<ZknhVillageConfig> getVillageList(String villageId) throws Exception {
+
+        return zknhVillageConfigMapper.getVillageList(villageId);
     }
 }

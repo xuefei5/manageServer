@@ -18,6 +18,7 @@ import com.simplemall.micro.serv.common.constant.CommonConstant;
 import com.simplemall.micro.serv.common.system.query.QueryGenerator;
 import com.simplemall.micro.serv.common.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,9 +95,17 @@ public class ZknhWeChatConfigController {
      * @throws Exception
      */
     @RequestMapping(value = "/queryVillageList", method = RequestMethod.GET)
-    public Result<List<ZknhVillageConfig>> queryVillageList() throws Exception{
+    public Result<List<ZknhVillageConfig>> queryVillageList(@RequestParam(name="id",defaultValue = "") String villageId) throws Exception{
 
-        List<ZknhVillageConfig> retList = zknhVillageConfigService.getVillageList();
+        //如果传入id，则是查镇下面的村列表，反之，查所有的镇
+        List<ZknhVillageConfig> retList= null;
+        if(StringUtils.isEmpty(villageId)){
+            retList = zknhVillageConfigService.getVillagesList();
+        }
+        if(StringUtils.isNotEmpty(villageId)){
+             retList = zknhVillageConfigService.getVillageList(villageId);
+        }
+
 
         return Result.OK(retList);
 
