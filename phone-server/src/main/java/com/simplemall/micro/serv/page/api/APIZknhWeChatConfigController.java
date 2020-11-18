@@ -53,9 +53,9 @@ public class APIZknhWeChatConfigController {
 
     @ApiOperation(value = "获取村集体列表")
     @RequestMapping(value = "queryVillageList", method = RequestMethod.GET)
-    public Result<List<ZknhVillageConfig>> queryVillageList(){
+    public Result<List<ZknhVillageConfig>> queryVillageList(@RequestParam(name="villageId") String villageId){
 
-        return zknhWeChatConFeignClient.queryVillageList();
+        return zknhWeChatConFeignClient.queryVillageList(villageId);
     }
 
     @ApiOperation(value = "获取村庄详情")

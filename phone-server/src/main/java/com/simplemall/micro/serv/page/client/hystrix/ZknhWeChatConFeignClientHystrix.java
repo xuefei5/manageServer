@@ -38,7 +38,7 @@ public class ZknhWeChatConFeignClientHystrix implements ZknhWeChatConFeignClient
 	}
 
 	@Override
-	public Result<List<ZknhVillageConfig>> queryVillageList() {
+	public Result<List<ZknhVillageConfig>> queryVillageList(String villageId) {
 
 		return  Result.OK();
 	}

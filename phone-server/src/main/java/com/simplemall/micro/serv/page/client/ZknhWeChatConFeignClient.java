@@ -35,7 +35,7 @@ public interface ZknhWeChatConFeignClient {
 	public Result<String> getWeChatMainLeftImg();
 
 	@RequestMapping(value = "/zknh_wechat_config/queryVillageList",method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Result<List<ZknhVillageConfig>> queryVillageList();
+	public Result<List<ZknhVillageConfig>> queryVillageList(@RequestParam(name="id")String villageId);
 
 	@RequestMapping(value = "/zknh_wechat_config/queryVillageModelById",method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Result<List<ZknhVillageModel>> queryVillageModelById(@RequestParam(name="id")String villageId);
