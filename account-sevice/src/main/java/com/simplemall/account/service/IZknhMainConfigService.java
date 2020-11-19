@@ -27,4 +27,10 @@ public interface IZknhMainConfigService extends IService<ZknhMainConfig> {
 
     /* 修改微信背景图*/
     public int updateModify(String url);
+
+    /* 查询微信模块*/
+    public List<ZknhMainConfig> queryModule(Integer pageNo,Integer pageSize,ZknhMainConfig zknhMainConfig);
+
+    /*删除微信模块*/
+    public int deleteId(int id);
 }

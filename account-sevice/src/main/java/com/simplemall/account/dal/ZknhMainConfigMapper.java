@@ -27,5 +27,16 @@ public interface ZknhMainConfigMapper extends BaseMapper<ZknhMainConfig> {
      * @return
      */
     public int updateModify(@Param("url") String url);
+    /**
+     * 查询微信模块
+     * @return
+     */
+    public List<ZknhMainConfig> queryModule(@Param("pageNoOne") Integer pageNo,@Param("pageSize") Integer pageSize,@Param("zknhMainConfig") ZknhMainConfig zknhMainConfig);
+
+    /**
+     * 删除模块
+     * @return
+     */
+    public int deleteId(@Param("id") int id);
 }
 

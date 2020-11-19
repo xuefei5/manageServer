@@ -23,8 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 准康农惠微信配置服务
@@ -236,5 +235,107 @@ public class ZknhWeChatConfigController {
             result.setResult("1");
         }
         return result;
+    }
+    /**
+     * 导航页模块查询设置
+     * @return
+     * @throws Exception
+     * @author wangshun
+     */
+    @RequestMapping(value = "/queryModule", method = RequestMethod.GET)
+    public Result<?> queryModule( @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhMainConfig zknhMainConfig, HttpServletRequest req){
+        Result<Map<String,Object>> result = new Result<Map<String,Object>>();
+        List<ZknhMainConfig> pageList = zknhMainConfigService.queryModule(pageNo, pageSize,zknhMainConfig);
+        Map<String,Object> pageMap = new HashMap<>();
+        pageMap.put("records",pageList);
+        pageMap.put("pages",pageNo-1);
+        pageMap.put("size",pageSize);
+        pageMap.put("current",pageNo );
+        pageMap.put("hitCount",false );
+        pageMap.put("optimizeCountSql",true );
+        pageMap.put("searchCount",true );
+        pageMap.put("orders",new ArrayList<>() );
+        pageMap.put("total",0 );
+        result.setSuccess(true);
+        result.setResult(pageMap);
+        log.info(pageMap.toString());
+        return result;
+    }
+    /**
+     * 导航页模块修改设置
+     * @return
+     * @throws Exception
+     * @author wangshun
+     */
+    @RequestMapping(value = "/editModule", method = RequestMethod.POST)
+    public Result<ZknhMainConfig> editModule(@RequestBody ZknhMainConfig zknhMainConfig){
+        Result<ZknhMainConfig> result = new Result<ZknhMainConfig>();
+        ZknhMainConfig update = zknhMainConfigService.getById(zknhMainConfig.getId());
+        if(update==null) {
+            result.error500("未找到对应实体");
+        }else {
+            boolean ok = zknhMainConfigService.updateById(zknhMainConfig);
+            //TODO 返回false说明什么？
+            if(ok) {
+                result.success("修改成功!");
+            }else{
+                result.error500("修改失败");
+            }
+        }
+        return result;
+    }
+    /**
+     * 导航页模块删除设置
+     * @return
+     * @throws Exception
+     * @author wangshun
+     */
+    @RequestMapping(value = "/deleteModule", method = RequestMethod.DELETE)
+    public Result<?> deleteModule(@RequestParam(name="id",required=true) int id){
+        Result<?> result = new Result<>();
+        try {
+            int delete = zknhMainConfigService.deleteId(id);
+            if (delete > 0) {
+                return Result.ok("删除模块成功");
+            } else {
+                return result.error500("失败");
+            }
+        }catch (Exception e){
+            log.error("失败"+e);
+            return result.error500("删除失败");
+        }
+    }
+    /**
+     * 导航页模块新增设置
+     * @return
+     * @throws Exception
+     * @author wangshun
+     */
+    @RequestMapping(value = "/addModule", method = RequestMethod.POST)
+    public Result<ZknhMainConfig> addModule(@RequestBody ZknhMainConfig zknhMainConfig,HttpServletRequest request){
+        Result<ZknhMainConfig> result = new Result<ZknhMainConfig>();
+        try {
+            //获取创建人
+            String token = request.getHeader(CommonConstant.X_ACCESS_TOKEN);
+            String username = JwtUtil.getUsername(token);
+            zknhMainConfig.setDoneUserName(username);//最后一次修改人
+            zknhMainConfig.setDoneDate(new Date());//最后一次修改时间
+            zknhMainConfigService.save(zknhMainConfig);
+            result.success("添加成功！");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+    /**
+     * 批量删除商品配置
+     */
+    //@RequiresRoles({"admin"})
+    @RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
+    public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
+        this.zknhMainConfigService.removeByIds(Collections.singleton(ids));
+        return Result.ok("批量删除商品成功");
     }
 }

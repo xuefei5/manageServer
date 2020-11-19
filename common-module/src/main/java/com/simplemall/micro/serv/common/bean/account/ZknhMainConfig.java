@@ -51,5 +51,6 @@ public class ZknhMainConfig implements Serializable {
 
     @Excel(name = "排序")
     private int sort;
-
+    @Excel(name = "生失效")
+    private int status;
 }

@@ -8,13 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 @Slf4j
 public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper, ZknhMainConfig> implements IZknhMainConfigService {
 
-    @Autowired
+    @Resource
     ZknhMainConfigMapper zknhMainConfigMapper;
     @Override
     public ZknhMainConfig getWechatMainBack() {
@@ -37,5 +38,15 @@ public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper,
     public int updateModify(String url) {
 
         return zknhMainConfigMapper.updateModify(url);
+    }
+    /* 查询微信模块*/
+    public List<ZknhMainConfig> queryModule(Integer pageNo,Integer pageSize,ZknhMainConfig zknhMainConfig) {
+        //分页
+        Integer pageNoOne = (pageNo-1)*pageSize;
+        return zknhMainConfigMapper.queryModule(pageNoOne,pageSize,zknhMainConfig);
+    }
+    /*删除微信模块*/
+    public int deleteId(int id){
+        return zknhMainConfigMapper.deleteId(id);
     }
 }

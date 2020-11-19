@@ -17,4 +17,24 @@
 	<update id = "updateModify">
     update zknh_main_config set modal_url = #{url} where modal_type = '3';
     </update>
+	<!-- 查询主页模块-->
+	<select id = "queryModule" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
+    select * from zknh_main_config a
+    where 1=1
+   	 	<if test="zknhMainConfig.modalName !=null and zknhMainConfig.modalName !=''">
+    		and a.modal_name = #{zknhMainConfig.modalName}
+		</if>
+		<if test="zknhMainConfig.modalIcon !=null and zknhMainConfig.modalIcon !=''">
+			and a.modal_icon = #{zknhMainConfig.modalIcon}
+		</if>
+		<if test="zknhMainConfig.modalType !=null and zknhMainConfig.modalType !=''">
+			and a.modal_type = #{zknhMainConfig.modalType}
+		</if>
+   		and a.modal_type not in ("3","4") limit #{pageNoOne},#{pageSize};
+    </select>
+
+	<!--删除模块 -->
+	<delete id = "deleteId">
+	delete from zknh_main_config where id = #{id};
+	</delete>
 </mapper>
