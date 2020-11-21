@@ -14,9 +14,11 @@ import com.simplemall.micro.serv.common.bean.account.ZknhMainConfig;
 import com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig;
 import com.simplemall.micro.serv.common.bean.account.ZknhVillageDetail;
 import com.simplemall.micro.serv.common.bean.account.ZknhVillageModel;
+import com.simplemall.micro.serv.common.bean.offer.PmOffer;
 import com.simplemall.micro.serv.common.constant.CommonConstant;
 import com.simplemall.micro.serv.common.system.query.QueryGenerator;
 import com.simplemall.micro.serv.common.util.JwtUtil;
+import com.simplemall.micro.serv.common.util.PriceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -221,9 +223,9 @@ public class ZknhWeChatConfigController {
     @RequestMapping(value = "/wechatMainUpdate", method = RequestMethod.POST)
     public Result<Object> updateModify(@RequestBody JSONObject jsonObject) throws Exception{
         Result<Object> result = new Result<>();
-        String url = jsonObject.getString("url");
-        if(url == null || "".equals(url)){
-            result.error500("获取url为空");
+        String url = String.valueOf(jsonObject.getString("url"));
+        if(url =="[]" || "".equals(url)){
+            result.error500("未获取到图片/图标");
             return result;
         }
         int i = zknhMainConfigService.updateModify(url);
@@ -338,4 +340,28 @@ public class ZknhWeChatConfigController {
         this.zknhMainConfigService.removeByIds(Collections.singleton(ids));
         return Result.ok("批量删除商品成功");
     }
+    /**
+     * 村镇查询分页
+     * @return
+     * @throws Exception
+     * @author wangshun
+     */
+    @RequestMapping(value = "/queryTownsVillages", method = RequestMethod.GET)
+    public Result<?> queryTownsVillages( @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageConfig zknhVillageConfig, HttpServletRequest req){
+
+        Result<IPage<ZknhVillageConfig>> result = new Result<IPage<ZknhVillageConfig>>();
+        //1.镇，2.村
+        QueryWrapper<ZknhVillageConfig> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageConfig, req.getParameterMap());
+        //TODO 外部模拟登陆临时账号，列表不显示
+        //queryWrapper.ne("offer_name","_reserve_user_external");
+        Page<ZknhVillageConfig> page = new Page<ZknhVillageConfig>(pageNo, pageSize);
+        IPage<ZknhVillageConfig> pageList = zknhVillageConfigService.page(page, queryWrapper);
+
+        result.setSuccess(true);
+        result.setResult(pageList);
+        log.info(pageList.toString());
+        return result;
+    }
+    
 }

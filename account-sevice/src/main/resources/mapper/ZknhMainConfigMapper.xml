@@ -15,7 +15,7 @@
 	</select>
 	<!-- 修改主页背景图-->
 	<update id = "updateModify">
-    update zknh_main_config set modal_url = #{url} where modal_type = '3';
+    update zknh_main_config set modal_icon = #{url} where modal_type = '3';
     </update>
 	<!-- 查询主页模块-->
 	<select id = "queryModule" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
