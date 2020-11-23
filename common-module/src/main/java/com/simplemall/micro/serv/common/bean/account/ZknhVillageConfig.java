@@ -38,6 +38,12 @@ public class ZknhVillageConfig implements Serializable {
     @Excel(name = "链接地址", width = 520)
     private String villageContent;
 
+    @Excel(name = "村镇类型")
+    private int villageType;
+
+    @Excel(name = "村上级ID", width = 64)
+    private String villageParentId;
+
     @Excel(name = "排序")
     private int sort;
 }

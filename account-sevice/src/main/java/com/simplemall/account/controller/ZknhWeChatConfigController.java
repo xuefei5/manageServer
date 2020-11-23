@@ -20,6 +20,7 @@ import com.simplemall.micro.serv.common.system.query.QueryGenerator;
 import com.simplemall.micro.serv.common.util.JwtUtil;
 import com.simplemall.micro.serv.common.util.PriceUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,9 @@ public class ZknhWeChatConfigController {
 
     @Autowired
     private IZknhVillageModelService zknhVillageModelService;
+
+    private final String villagesIconUrl = "main_model_default.png";//镇的默认图标地址
+    private final String villageBackUrl = "village_model_2.png";//村的默认背景图
 
     /**
      * 微信端-查询主页背景图片服务
@@ -363,5 +367,82 @@ public class ZknhWeChatConfigController {
         log.info(pageList.toString());
         return result;
     }
-    
+
+    /**
+     * 添加村或者镇
+     * @param reqMap
+     * @return
+     */
+    @RequestMapping(value = "/addVillages", method = RequestMethod.POST)
+    public Result<?> addVillages(@RequestBody JSONObject reqMap){
+        Result ret = new Result();
+        try{
+            ZknhVillageConfig zknhVillageConfig = JSON.parseObject(reqMap.toJSONString(),ZknhVillageConfig.class);
+            //获取图标路径或者背景图路径
+            String iconUrl = MapUtils.getString(reqMap,"fileList");
+
+            //生成主键
+            String id = UUID.randomUUID().toString().replace("-", "");
+
+            if(StringUtils.isEmpty(iconUrl)){
+                if("1".equals(zknhVillageConfig.getVillageType())){
+                    iconUrl = villagesIconUrl;//此处是默认图标图
+                }
+                if("2".equals(zknhVillageConfig.getVillageType())){
+                    iconUrl = villageBackUrl;//此处是默认背景图
+                }
+            }
+            zknhVillageConfig.setVillageBack(iconUrl);
+            zknhVillageConfig.setId(id);
+
+            zknhVillageConfigService.save(zknhVillageConfig);
+            ret.success("添加成功");
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            ret.error500("操作失败");
+        }
+        return ret;
+    }
+
+    /**
+     * 修改村或者镇
+     * @param reqMap
+     * @return
+     */
+    @RequestMapping(value = "/editVillages", method = RequestMethod.POST)
+    public Result<?> editVillages(@RequestBody JSONObject reqMap){
+        Result ret = new Result();
+        try{
+            ZknhVillageConfig zknhVillageConfig = JSON.parseObject(reqMap.toJSONString(),ZknhVillageConfig.class);
+            //获取图标路径或者背景图路径
+            String iconUrl = MapUtils.getString(reqMap,"fileList");
+
+            if(StringUtils.isEmpty(iconUrl)){
+                if("1".equals(zknhVillageConfig.getVillageType())){
+                    iconUrl = villagesIconUrl;//此处是默认图标图
+                }
+                if("2".equals(zknhVillageConfig.getVillageType())){
+                    iconUrl = villageBackUrl;//此处是默认背景图
+                }
+            }
+            zknhVillageConfig.setVillageBack(iconUrl);
+
+            zknhVillageConfigService.saveOrUpdate(zknhVillageConfig);
+            ret.success("修改成功");
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            ret.error500("修改失败");
+        }
+        return ret;
+    }
+
+    /**
+     * 删除村镇
+     */
+    @RequestMapping(value = "/deleteVillages", method = RequestMethod.DELETE)
+    public Result<?> delete(@RequestParam(name="id",required=true) String id) {
+        this.zknhVillageConfigService.removeById(id);
+        return Result.ok("删除信息成功");
+    }
+
 }
