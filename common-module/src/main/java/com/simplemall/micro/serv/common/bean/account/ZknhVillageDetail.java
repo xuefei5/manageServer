@@ -98,4 +98,41 @@ public class ZknhVillageDetail implements Serializable {
         }
         return ret;
     }
+
+    public void set(int key,String value){
+        switch (key){
+            case 1:
+                content1 = value;
+                break;
+            case 2:
+                content2 = value;
+                break;
+            case 3:
+                content3 = value;
+                break;
+            case 4:
+                content4 = value;
+                break;
+            case 5:
+                content5 = value;
+                break;
+            case 6:
+                content6 = value;
+                break;
+            case 7:
+                content7 = value;
+                break;
+            case 8:
+                content8 = value;
+                break;
+            case 9:
+                content9 = value;
+                break;
+            case 10:
+                content10 = value;
+                break;
+            default:
+                break;
+        }
+    }
 }

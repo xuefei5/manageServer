@@ -445,4 +445,87 @@ public class ZknhWeChatConfigController {
         return Result.ok("删除信息成功");
     }
 
+    /**
+     * 查询村模块
+     * @param pageNo
+     * @param pageSize
+     * @param zknhVillageModel
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/queryVillageModel", method = RequestMethod.GET)
+    public Result<?> queryVillageModel(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                      @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageModel zknhVillageModel, HttpServletRequest req){
+        Result<IPage<ZknhVillageModel>> result = new Result<IPage<ZknhVillageModel>>();
+        //1.镇，2.村
+        QueryWrapper<ZknhVillageModel> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageModel, req.getParameterMap());
+        //TODO 外部模拟登陆临时账号，列表不显示
+        //queryWrapper.ne("offer_name","_reserve_user_external");
+        Page<ZknhVillageModel> page = new Page<ZknhVillageModel>(pageNo, pageSize);
+        IPage<ZknhVillageModel> pageList = zknhVillageModelService.page(page, queryWrapper);
+
+        result.setSuccess(true);
+        result.setResult(pageList);
+        log.info(pageList.toString());
+        return result;
+    }
+
+
+    /**
+     * 添加模块
+     * @param reqMap
+     * @return
+     */
+    @RequestMapping(value = "/addVillageModel", method = RequestMethod.POST)
+    public Result<?> addVillageModel(@RequestBody JSONObject reqMap){
+        Result ret = new Result();
+        try{
+            ZknhVillageModel zknhVillageModel = JSON.parseObject(reqMap.toJSONString(),ZknhVillageModel.class);
+            //获取背景图路径
+            String modelUrl = MapUtils.getString(reqMap,"fileList");
+
+            //生成主键
+            String id = UUID.randomUUID().toString().replace("-", "");
+            zknhVillageModel.setModelImg(modelUrl);
+            zknhVillageModel.setId(id);
+
+            //处理详情
+            String detail = reqMap.getString("DETAIL");
+            dealModelDetail4Add(zknhVillageModel.getId(),detail);
+
+            zknhVillageModelService.save(zknhVillageModel);
+            ret.success("添加成功");
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            ret.error500("操作失败");
+        }
+        return ret;
+    }
+
+    /**
+     * 处理增加详情
+     * @param id
+     * @param detail
+     */
+    private void dealModelDetail4Add(String id, String detail) {
+        int length = 1000;
+        //定义循环次数(对1000取余，如果余数大于0，则增加1)
+        int contentNum = detail.length()%length>0?detail.length()+1:detail.length();
+        List<ZknhVillageDetail> zknhVillageDetails = new ArrayList<ZknhVillageDetail>();
+        ZknhVillageDetail zknhVillageDetail = null;
+        for(int i=0;i<=contentNum;i++){
+            //如果是第一次循环或者以后的每十次都增加一行
+            if(i/9==0||i==0){
+                zknhVillageDetail = new ZknhVillageDetail();
+                zknhVillageDetail.setModelId(id);
+                zknhVillageDetail.setSort((i+1));
+
+                zknhVillageDetails.add(zknhVillageDetail);
+            }
+            //截取字符串
+            zknhVillageDetail.set((i+1),detail.substring(i*length,(i+1)*length));
+        }
+        zknhVillageDetailService.saveBatch(zknhVillageDetails);
+    }
+
 }
