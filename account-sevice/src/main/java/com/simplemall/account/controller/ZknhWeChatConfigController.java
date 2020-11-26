@@ -423,4 +423,100 @@ public class ZknhWeChatConfigController {
         return Result.ok("批量删除商品成功");
     }
 
+    /**
+     * 添加模块
+     * @param reqMap
+     * @return
+     */
+    @RequestMapping(value = "/saveVillageModel", method = RequestMethod.POST)
+    public Result<?> saveVillageModel(@RequestBody JSONObject reqMap){
+        Result ret = new Result();
+        try{
+            String operType = reqMap.getString("OPER_TYPE");//1-新增,2-修改
+            ZknhVillageModel zknhVillageModel = JSON.parseObject(reqMap.toJSONString(),ZknhVillageModel.class);
+            //获取背景图路径
+            String modelUrl = MapUtils.getString(reqMap,"fileList");
+
+            if("1".equals(operType)){
+                //生成主键
+                String id = UUID.randomUUID().toString().replace("-", "");
+                zknhVillageModel.setId(id);
+            }
+            zknhVillageModel.setModelImg(modelUrl);
+
+            //如果是修改先删除详情,然后再新增,因为我没法判断修改没修改
+            if("2".equals(operType)){
+                delModelDetail(zknhVillageModel.getId());
+            }
+
+            //处理详情
+            String detail = reqMap.getString("DETAIL");
+            dealModelDetail4Add(zknhVillageModel.getId(),detail);
+
+            if("1".equals(operType)){
+                zknhVillageModelService.save(zknhVillageModel);
+            }
+            if("2".equals(operType)){
+                zknhVillageModelService.saveOrUpdate(zknhVillageModel);
+            }
+            ret.success("操作成功");
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            ret.error500("操作失败");
+        }
+        return ret;
+    }
+
+    @RequestMapping(value = "/deleteVillageModel", method = RequestMethod.DELETE)
+    public Result<?> deleteVillageModel(@RequestParam(name="id",required=true) String id){
+        Result<?> result = new Result<>();
+        try {
+            zknhVillageModelService.removeById(id);
+            delModelDetail(id);
+            return result.success("删除成功!");
+        }catch (Exception e){
+            log.error("失败"+e);
+            return result.error500("删除失败");
+        }
+    }
+
+
+    /**
+     * 处理增加详情
+     * @param id
+     * @param detail
+     */
+    private void dealModelDetail4Add(String id, String detail) {
+        int length = 1000;
+        //定义循环次数(对1000取余，如果余数大于0，则增加1)
+        int contentNum = detail.length()%length>0?detail.length()+1:detail.length();
+        List<ZknhVillageDetail> zknhVillageDetails = new ArrayList<ZknhVillageDetail>();
+        ZknhVillageDetail zknhVillageDetail = null;
+        for(int i=0;i<=contentNum;i++){
+            //如果是第一次循环或者以后的每十次都增加一行
+            if(i/9==0||i==0){
+                zknhVillageDetail = new ZknhVillageDetail();
+                zknhVillageDetail.setModelId(id);
+                zknhVillageDetail.setSort((i+1));
+
+                zknhVillageDetails.add(zknhVillageDetail);
+            }
+            //截取字符串
+            zknhVillageDetail.set((i+1),detail.substring(i*length,(i+1)*length));
+        }
+        zknhVillageDetailService.saveBatch(zknhVillageDetails);
+    }
+
+    /**
+     * 删除详情
+     * @param id
+     */
+    private void delModelDetail(String id){
+        ZknhVillageDetail zknhVillageDetail = new ZknhVillageDetail();
+        Map queryMap = new HashMap();
+        queryMap.put("modelId",id);
+        QueryWrapper<ZknhVillageDetail> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageDetail, queryMap);
+        zknhVillageDetailService.remove(queryWrapper);
+    }
+
 }
