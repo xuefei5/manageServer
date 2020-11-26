@@ -18,4 +18,9 @@ public interface ZknhVillageConfigMapper extends BaseMapper<ZknhVillageConfig> {
      * @return
      */
     public List<ZknhVillageConfig> getVillageList(@Param("villageId") String villageId);
+    /**
+     * 删除模块
+     * @return
+     */
+    public int deleteId(@Param("id") int id);
 }

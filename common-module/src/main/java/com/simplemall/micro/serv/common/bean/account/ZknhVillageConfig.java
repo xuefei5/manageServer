@@ -46,4 +46,11 @@ public class ZknhVillageConfig implements Serializable {
 
     @Excel(name = "排序")
     private int sort;
+    @Excel(name = "修改人员", width = 255)
+    private String doneUserName;
+
+    @Excel(name = "修改时间", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date createTime;
 }

@@ -9,5 +9,8 @@
     <select id="getVillageList" resultType="com.simplemall.micro.serv.common.bean.account.ZknhVillageConfig">
 		select * from  zknh_village_config where village_parent_id=#{villageId} and village_type='2'  order by sort asc;
 	</select>
-
+	<!--删除模块 -->
+	<delete id = "deleteId">
+	delete from zknh_main_config where id = #{id};
+	</delete>
 </mapper>

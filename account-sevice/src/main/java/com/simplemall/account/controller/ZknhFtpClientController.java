@@ -3,6 +3,10 @@ package com.simplemall.account.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simplemall.micro.serv.common.bean.Result;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -12,6 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -57,11 +67,22 @@ public class ZknhFtpClientController {
                 result.setMessage("上传失败！");
                 result.setSuccess(false);
                 return result;
+            }else {
+                //压缩图片
+                Thumbnails.of("/home/ftpuser/health/"+newName)
+                        .scale(0.75f)
+                        .outputQuality(0.5f).outputFormat("jpg")
+                        .toFile("/home/ftpuser/health/"+newName);
+                //在压缩生产缩略图
+                String back = newName.replace(".","_back.");
+                Thumbnails.of("/home/ftpuser/health/"+newName)
+                        .scale(0.75f)
+                        .outputQuality(0.1f).outputFormat("jpg")
+                        .toFile("/home/ftpuser/health/thumbnail/"+back);
+                result.setMessage(newName);
+                result.setSuccess(true);
+                return result;
             }
-            result.setMessage(newName);
-            result.setSuccess(true);
-            return result;
-
         } catch (Exception e) {
             e.printStackTrace();
             result.setMessage("上传失败！");
@@ -125,4 +146,16 @@ public class ZknhFtpClientController {
         }
         return result;
     }
+    public static void main(String[] arg) throws IOException {
+
+        Thumbnails.of("/home/ftpuser/health/about.jpg")
+                .scale(0.75f)
+                .outputQuality(0.1f).outputFormat("jpg")
+                .toFile("/home/ftpuser/health/about.jpg");
+        /*Thumbnails.of("D:/h5/team/assets/images/wangshun.jpg")
+                .scale(0.75f)
+                .outputQuality(0.1f).outputFormat("jpg")
+                .toFile("D:/h5/team/assets/images/wangshun.jpg");*/
+    }
+
 }

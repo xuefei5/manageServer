@@ -336,12 +336,13 @@ public class ZknhWeChatConfigController {
         return result;
     }
     /**
-     * 批量删除商品配置
+     * 批量删除模块配置
      */
     //@RequiresRoles({"admin"})
     @RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
     public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-        this.zknhMainConfigService.removeByIds(Collections.singleton(ids));
+        String[] idsList = ids.split(",");
+        this.zknhMainConfigService.removeByIds(Collections.singleton(idsList));
         return Result.ok("批量删除商品成功");
     }
     /**
@@ -352,7 +353,7 @@ public class ZknhWeChatConfigController {
      */
     @RequestMapping(value = "/queryTownsVillages", method = RequestMethod.GET)
     public Result<?> queryTownsVillages( @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageConfig zknhVillageConfig, HttpServletRequest req){
+                                         @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageConfig zknhVillageConfig, HttpServletRequest req){
 
         Result<IPage<ZknhVillageConfig>> result = new Result<IPage<ZknhVillageConfig>>();
         //1.镇，2.村
@@ -361,171 +362,65 @@ public class ZknhWeChatConfigController {
         //queryWrapper.ne("offer_name","_reserve_user_external");
         Page<ZknhVillageConfig> page = new Page<ZknhVillageConfig>(pageNo, pageSize);
         IPage<ZknhVillageConfig> pageList = zknhVillageConfigService.page(page, queryWrapper);
-
+        log.info("测试"+pageList);
         result.setSuccess(true);
         result.setResult(pageList);
         log.info(pageList.toString());
         return result;
     }
-
     /**
-     * 添加村或者镇
-     * @param reqMap
+     * 镇模块修改设置
      * @return
+     * @throws Exception
+     * @author wangshun
      */
-    @RequestMapping(value = "/addVillages", method = RequestMethod.POST)
-    public Result<?> addVillages(@RequestBody JSONObject reqMap){
-        Result ret = new Result();
-        try{
-            ZknhVillageConfig zknhVillageConfig = JSON.parseObject(reqMap.toJSONString(),ZknhVillageConfig.class);
-            //获取图标路径或者背景图路径
-            String iconUrl = MapUtils.getString(reqMap,"fileList");
-
-            //生成主键
-            String id = UUID.randomUUID().toString().replace("-", "");
-
-            if(StringUtils.isEmpty(iconUrl)){
-                if("1".equals(zknhVillageConfig.getVillageType())){
-                    iconUrl = villagesIconUrl;//此处是默认图标图
-                }
-                if("2".equals(zknhVillageConfig.getVillageType())){
-                    iconUrl = villageBackUrl;//此处是默认背景图
-                }
+    @RequestMapping(value = "/editVillage", method = RequestMethod.POST)
+    public Result<ZknhVillageConfig> editVillage(@RequestBody ZknhVillageConfig zknhVillageConfig){
+        Result<ZknhVillageConfig> result = new Result<ZknhVillageConfig>();
+        ZknhVillageConfig update = zknhVillageConfigService.getById(zknhVillageConfig.getId());
+        if(update==null) {
+            result.error500("未找到对应实体");
+        }else {
+            boolean ok = zknhVillageConfigService.updateById(zknhVillageConfig);
+            //TODO 返回false说明什么？
+            if(ok) {
+                result.success("修改成功!");
+            }else{
+                result.error500("修改失败");
             }
-            zknhVillageConfig.setVillageBack(iconUrl);
-            zknhVillageConfig.setId(id);
-
-            zknhVillageConfigService.save(zknhVillageConfig);
-            ret.success("添加成功");
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-            ret.error500("操作失败");
         }
-        return ret;
-    }
-
-    /**
-     * 修改村或者镇
-     * @param reqMap
-     * @return
-     */
-    @RequestMapping(value = "/editVillages", method = RequestMethod.POST)
-    public Result<?> editVillages(@RequestBody JSONObject reqMap){
-        Result ret = new Result();
-        try{
-            ZknhVillageConfig zknhVillageConfig = JSON.parseObject(reqMap.toJSONString(),ZknhVillageConfig.class);
-            //获取图标路径或者背景图路径
-            String iconUrl = MapUtils.getString(reqMap,"fileList");
-
-            if(StringUtils.isEmpty(iconUrl)){
-                if("1".equals(zknhVillageConfig.getVillageType())){
-                    iconUrl = villagesIconUrl;//此处是默认图标图
-                }
-                if("2".equals(zknhVillageConfig.getVillageType())){
-                    iconUrl = villageBackUrl;//此处是默认背景图
-                }
-            }
-            zknhVillageConfig.setVillageBack(iconUrl);
-
-            zknhVillageConfigService.saveOrUpdate(zknhVillageConfig);
-            ret.success("修改成功");
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-            ret.error500("修改失败");
-        }
-        return ret;
-    }
-
-    /**
-     * 删除村镇
-     */
-    @RequestMapping(value = "/deleteVillages", method = RequestMethod.DELETE)
-    public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-        this.zknhVillageConfigService.removeById(id);
-        return Result.ok("删除信息成功");
-    }
-
-    /**
-     * 查询村模块
-     * @param pageNo
-     * @param pageSize
-     * @param zknhVillageModel
-     * @param req
-     * @return
-     */
-    @RequestMapping(value = "/queryVillageModel", method = RequestMethod.GET)
-    public Result<?> queryVillageModel(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                      @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageModel zknhVillageModel, HttpServletRequest req){
-        Result<IPage<ZknhVillageModel>> result = new Result<IPage<ZknhVillageModel>>();
-        //1.镇，2.村
-        QueryWrapper<ZknhVillageModel> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageModel, req.getParameterMap());
-        //TODO 外部模拟登陆临时账号，列表不显示
-        //queryWrapper.ne("offer_name","_reserve_user_external");
-        Page<ZknhVillageModel> page = new Page<ZknhVillageModel>(pageNo, pageSize);
-        IPage<ZknhVillageModel> pageList = zknhVillageModelService.page(page, queryWrapper);
-
-        result.setSuccess(true);
-        result.setResult(pageList);
-        log.info(pageList.toString());
         return result;
     }
-
-
     /**
-     * 添加模块
-     * @param reqMap
+     * 镇列表模块删除设置
      * @return
+     * @throws Exception
+     * @author wangshun
      */
-    @RequestMapping(value = "/addVillageModel", method = RequestMethod.POST)
-    public Result<?> addVillageModel(@RequestBody JSONObject reqMap){
-        Result ret = new Result();
-        try{
-            ZknhVillageModel zknhVillageModel = JSON.parseObject(reqMap.toJSONString(),ZknhVillageModel.class);
-            //获取背景图路径
-            String modelUrl = MapUtils.getString(reqMap,"fileList");
-
-            //生成主键
-            String id = UUID.randomUUID().toString().replace("-", "");
-            zknhVillageModel.setModelImg(modelUrl);
-            zknhVillageModel.setId(id);
-
-            //处理详情
-            String detail = reqMap.getString("DETAIL");
-            dealModelDetail4Add(zknhVillageModel.getId(),detail);
-
-            zknhVillageModelService.save(zknhVillageModel);
-            ret.success("添加成功");
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-            ret.error500("操作失败");
-        }
-        return ret;
-    }
-
-    /**
-     * 处理增加详情
-     * @param id
-     * @param detail
-     */
-    private void dealModelDetail4Add(String id, String detail) {
-        int length = 1000;
-        //定义循环次数(对1000取余，如果余数大于0，则增加1)
-        int contentNum = detail.length()%length>0?detail.length()+1:detail.length();
-        List<ZknhVillageDetail> zknhVillageDetails = new ArrayList<ZknhVillageDetail>();
-        ZknhVillageDetail zknhVillageDetail = null;
-        for(int i=0;i<=contentNum;i++){
-            //如果是第一次循环或者以后的每十次都增加一行
-            if(i/9==0||i==0){
-                zknhVillageDetail = new ZknhVillageDetail();
-                zknhVillageDetail.setModelId(id);
-                zknhVillageDetail.setSort((i+1));
-
-                zknhVillageDetails.add(zknhVillageDetail);
+    @RequestMapping(value = "/deleteVillage", method = RequestMethod.DELETE)
+    public Result<?> deleteVillage(@RequestParam(name="id",required=true) int id){
+        Result<?> result = new Result<>();
+        try {
+            int delete = zknhVillageConfigService.deleteId(id);
+            if (delete > 0) {
+                return Result.ok("删除模块成功");
+            } else {
+                return result.error500("失败");
             }
-            //截取字符串
-            zknhVillageDetail.set((i+1),detail.substring(i*length,(i+1)*length));
+        }catch (Exception e){
+            log.error("失败"+e);
+            return result.error500("删除失败");
         }
-        zknhVillageDetailService.saveBatch(zknhVillageDetails);
+    }
+    /**
+     * 批量删除镇配置
+     */
+    //@RequiresRoles({"admin"})
+    @RequestMapping(value = "/deleteBatchVillage", method = RequestMethod.DELETE)
+    public Result<?> deleteBatchVillage(@RequestParam(name="ids",required=true) String ids) {
+        String[] idsList = ids.split(",");
+        this.zknhVillageConfigService.removeByIds(Collections.singleton(idsList));
+        return Result.ok("批量删除商品成功");
     }
 
 }

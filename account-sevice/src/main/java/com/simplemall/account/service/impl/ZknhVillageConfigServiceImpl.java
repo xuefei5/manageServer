@@ -28,4 +28,9 @@ public class ZknhVillageConfigServiceImpl extends ServiceImpl<ZknhVillageConfigM
 
         return zknhVillageConfigMapper.getVillageList(villageId);
     }
+    @Override
+    /*删除微信模块*/
+    public int deleteId(int id){
+        return zknhVillageConfigMapper.deleteId(id);
+    }
 }
