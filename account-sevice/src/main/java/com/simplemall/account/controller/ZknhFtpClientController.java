@@ -1,5 +1,6 @@
 package com.simplemall.account.controller;
 import com.simplemall.micro.serv.common.bean.Result;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
-
+@Slf4j
 @RestController
 @RequestMapping("/zknh_Image_upload")
 public class ZknhFtpClientController {
@@ -53,7 +54,7 @@ public class ZknhFtpClientController {
                 result.setSuccess(false);
                 return result;
             }else {
-                //压缩图片
+               /* //压缩图片
                 Thumbnails.of("/home/ftpuser/health/"+newName)
                         .scale(0.75f)
                         .outputQuality(0.5f).outputFormat("jpg")
@@ -63,7 +64,7 @@ public class ZknhFtpClientController {
                 Thumbnails.of("/home/ftpuser/health/"+newName)
                         .scale(0.75f)
                         .outputQuality(0.1f).outputFormat("jpg")
-                        .toFile("/home/ftpuser/health/thumbnail/"+back);
+                        .toFile("/home/ftpuser/health/thumbnail/"+back);*/
                 result.setMessage(newName);
                 result.setSuccess(true);
                 return result;
@@ -91,6 +92,9 @@ public class ZknhFtpClientController {
     public boolean uploadFile(String ip, Integer port, String account, String passwd,
                               InputStream inputStream, String workingDir, String fileName) throws Exception{
         boolean result = false;
+        long size = inputStream.read();
+        log.info("查看工作流"+inputStream);
+        log.info("查看工作流"+size);
         // 1. 创建一个FtpClient对象
         FTPClient ftpClient = new FTPClient();
         try {
@@ -98,6 +102,8 @@ public class ZknhFtpClientController {
             ftpClient.connect(ip, port);
             // 3. 登录 ftp 服务器
             ftpClient.login(account, passwd);
+            ftpClient.enterLocalPassiveMode();
+            log.info("设置被动2");
             int reply = ftpClient.getReplyCode(); // 获取连接ftp 状态返回值
             System.out.println("code : " + reply);
             if (!FTPReply.isPositiveCompletion(reply)) {
@@ -131,16 +137,16 @@ public class ZknhFtpClientController {
         }
         return result;
     }
-    public static void main(String[] arg) throws IOException {
+   /* public static void main(String[] arg) throws IOException {
 
         Thumbnails.of("/home/ftpuser/health/about.jpg")
                 .scale(0.75f)
                 .outputQuality(0.1f).outputFormat("jpg")
                 .toFile("/home/ftpuser/health/about.jpg");
-        /*Thumbnails.of("D:/h5/team/assets/images/wangshun.jpg")
+        *//*Thumbnails.of("D:/h5/team/assets/images/wangshun.jpg")
                 .scale(0.75f)
                 .outputQuality(0.1f).outputFormat("jpg")
-                .toFile("D:/h5/team/assets/images/wangshun.jpg");*/
-    }
+                .toFile("D:/h5/team/assets/images/wangshun.jpg");*//*
+    }*/
 
 }
