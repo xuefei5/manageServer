@@ -137,7 +137,7 @@ public class ZknhWeChatConfigController {
      * @throws Exception
      */
     @RequestMapping(value = "/queryVillageDetailByModelId", method = RequestMethod.GET)
-    public Result<List<ZknhVillageDetail>> queryVillageDetailByModelId(@RequestParam(name="modelId",defaultValue = "") String modelId) throws Exception{
+    public Result<List<ZknhVillageDetail>> queryVillageDetailByModelId(@RequestParam(name= "modelId",defaultValue = "") String modelId) throws Exception{
 
         List<ZknhVillageDetail> retList = zknhVillageDetailService.getVillageDetailByModelId(modelId);
 
@@ -424,6 +424,35 @@ public class ZknhWeChatConfigController {
     }
 
     /**
+     * 查询村模块
+     * @param pageNo
+     * @param pageSize
+     * @param zknhVillageModel
+     * @return
+     */
+    @RequestMapping(value = "/queryVillageModel", method = RequestMethod.GET)
+    public Result<?> queryVillageModel(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                       @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageModel zknhVillageModel, HttpServletRequest req){
+        Result<IPage<ZknhVillageModel>> result = new Result<IPage<ZknhVillageModel>>();
+        //1.镇，2.村
+        QueryWrapper<ZknhVillageModel> queryWrapper = new QueryWrapper<ZknhVillageModel>();
+        //拼接查询条件
+        queryWrapper.orderByAsc("model_sort");
+        if(null!=zknhVillageModel.getModelName()){
+            queryWrapper.like("model_name",zknhVillageModel.getModelName().replace("*",""));
+        }
+        queryWrapper.eq("village_id",zknhVillageModel.getVillageId());
+
+        Page<ZknhVillageModel> page = new Page<ZknhVillageModel>(pageNo, pageSize);
+        IPage<ZknhVillageModel> pageList = zknhVillageModelService.page(page, queryWrapper);
+
+        result.setSuccess(true);
+        result.setResult(pageList);
+        log.info(pageList.toString());
+        return result;
+    }
+
+    /**
      * 添加模块
      * @param reqMap
      * @return
@@ -432,7 +461,7 @@ public class ZknhWeChatConfigController {
     public Result<?> saveVillageModel(@RequestBody JSONObject reqMap){
         Result ret = new Result();
         try{
-            String operType = reqMap.getString("OPER_TYPE");//1-新增,2-修改
+            String operType = reqMap.getString("operType");//1-新增,2-修改
             ZknhVillageModel zknhVillageModel = JSON.parseObject(reqMap.toJSONString(),ZknhVillageModel.class);
             //获取背景图路径
             String modelUrl = MapUtils.getString(reqMap,"fileList");
@@ -441,6 +470,7 @@ public class ZknhWeChatConfigController {
                 //生成主键
                 String id = UUID.randomUUID().toString().replace("-", "");
                 zknhVillageModel.setId(id);
+                zknhVillageModel.setCreateTime(new Date());
             }
             zknhVillageModel.setModelImg(modelUrl);
 
@@ -450,7 +480,7 @@ public class ZknhWeChatConfigController {
             }
 
             //处理详情
-            String detail = reqMap.getString("DETAIL");
+            String detail = reqMap.getString("detail");
             dealModelDetail4Add(zknhVillageModel.getId(),detail);
 
             if("1".equals(operType)){
@@ -488,21 +518,34 @@ public class ZknhWeChatConfigController {
      */
     private void dealModelDetail4Add(String id, String detail) {
         int length = 1000;
-        //定义循环次数(对1000取余，如果余数大于0，则增加1)
-        int contentNum = detail.length()%length>0?detail.length()+1:detail.length();
+        //定义循环次数
+        int getInt = detail.length()/length;
+        int getRem = detail.length()%length;
+        int contentNum = getRem>0?getInt+1:getInt;
+
         List<ZknhVillageDetail> zknhVillageDetails = new ArrayList<ZknhVillageDetail>();
         ZknhVillageDetail zknhVillageDetail = null;
-        for(int i=0;i<=contentNum;i++){
+        int detailContentNum = 0;
+        for(int i=1;i<=contentNum;i++){
             //如果是第一次循环或者以后的每十次都增加一行
-            if(i/9==0||i==0){
+            if(i%11==0||i==1){
+                detailContentNum = 0;
                 zknhVillageDetail = new ZknhVillageDetail();
                 zknhVillageDetail.setModelId(id);
-                zknhVillageDetail.setSort((i+1));
+                zknhVillageDetail.setCreateTime(new Date());
+                zknhVillageDetail.setSort(zknhVillageDetails.size()+1);
 
                 zknhVillageDetails.add(zknhVillageDetail);
             }
+            detailContentNum++;
             //截取字符串
-            zknhVillageDetail.set((i+1),detail.substring(i*length,(i+1)*length));
+            int subLen = length;
+            if(detail.length()<=length){
+                subLen = detail.length();
+            }
+            String detailCopy = detail.substring(0,subLen);
+            detail = detail.substring(subLen,detail.length());
+            zknhVillageDetail.set(detailContentNum,detailCopy);
         }
         zknhVillageDetailService.saveBatch(zknhVillageDetails);
     }
@@ -513,10 +556,28 @@ public class ZknhWeChatConfigController {
      */
     private void delModelDetail(String id){
         ZknhVillageDetail zknhVillageDetail = new ZknhVillageDetail();
-        Map queryMap = new HashMap();
-        queryMap.put("modelId",id);
-        QueryWrapper<ZknhVillageDetail> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageDetail, queryMap);
+        QueryWrapper<ZknhVillageDetail> queryWrapper = new QueryWrapper<ZknhVillageDetail>();
+        queryWrapper.eq("model_id",id);
         zknhVillageDetailService.remove(queryWrapper);
+    }
+
+    @RequestMapping(value = "/getModelDetail", method = RequestMethod.GET)
+    public Result<String> getModelDetail(@RequestParam(name="modelId",required=true) String id) throws Exception{
+
+        StringBuffer sb = new StringBuffer();
+        List<ZknhVillageDetail> detailList = this.queryVillageDetailByModelId(id).getResult();
+        for (ZknhVillageDetail detail : detailList) {
+            //循环字段获取完整的详情
+            for (int i = 1; i < 11; i++) {
+                String content = String.valueOf(detail.get(i) == null ? "" : detail.get(i));
+                //如果一个为空说明后面的都为空，没必要过滤了
+                if (StringUtils.isEmpty(content)) {
+                    break;
+                }
+                sb.append(detail.get(i));
+            }
+        }
+        return Result.OK(sb.toString());
     }
 
 }

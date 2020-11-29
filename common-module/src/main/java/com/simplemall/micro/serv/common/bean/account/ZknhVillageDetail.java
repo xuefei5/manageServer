@@ -1,14 +1,17 @@
 package com.simplemall.micro.serv.common.bean.account;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,6 +58,11 @@ public class ZknhVillageDetail implements Serializable {
 
     @Excel(name = "模块详情介绍字段10", width = 1000)
     private String content10;
+
+    @Excel(name = "创建时间", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date createTime;
 
     @Excel(name = "排序")
     private int sort;
