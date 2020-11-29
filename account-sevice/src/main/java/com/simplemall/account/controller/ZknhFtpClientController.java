@@ -1,5 +1,7 @@
 package com.simplemall.account.controller;
 import com.simplemall.micro.serv.common.bean.Result;
+import com.simplemall.micro.serv.common.util.DateUtils;
+import com.simplemall.micro.serv.common.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.net.ftp.FTP;
@@ -10,13 +12,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 @Slf4j
 @RestController
 @RequestMapping("/zknh_Image_upload")
 public class ZknhFtpClientController {
-    private String FTP_ADDRESS = "39.104.93.182";     // ftp 服务器ip地址
+    //服务器上使用127.0.0.1,本地使用39.104.93.182
+    private String FTP_ADDRESS = "127.0.0.1";     // ftp 服务器ip地址
 
     private Integer FTP_PORT = 21;       // ftp 服务器port，默认是21
 
@@ -25,6 +31,8 @@ public class ZknhFtpClientController {
     private String FTP_PASSWORD = "ftpuser";    // ftp 服务器密码
 
     private String FTP_BASE_PATH = "/home/ftpuser/health";   // ftp 服务器存储图片的绝对路径
+
+    private String FTP_THUMB_PATH_= FTP_BASE_PATH+"/thumbnail";
 
     private String IMAGE_BASE_URL = "http://39.104.93.182:80/images";  // ftp 服务器外网访问图片路径
     @RequestMapping(value ="/upload",method = RequestMethod.POST)
@@ -40,32 +48,48 @@ public class ZknhFtpClientController {
     public Result<?> uploadPicture(MultipartFile uploadFile) {
         Result<?> result = new Result<>();
         try {
-            // 1. 取原始文件名
-            String oldName = uploadFile.getOriginalFilename();
+            //获取时间戳,生成新文件名
+            String newFileName = DateUtils.getDataString(DateUtils.yyyymmddhhmmss.get())+"."+ImageUtils.FILE_TYPE_JPG;
 
-            // 2. ftp 服务器的文件名
-            String newName = oldName;
-            //图片上传
+            //压缩图片--开始
+
+            //压缩主文件
+            BufferedImage mainImg = Thumbnails.of(uploadFile.getInputStream()).scale(0.75f)
+                    .outputFormat(ImageUtils.FILE_TYPE_JPG).asBufferedImage();
+
+            //创建一个新的BufferedImage，解决图片变色的问题
+            BufferedImage mainImgCopy = new BufferedImage(mainImg.getWidth(),mainImg.getHeight(),BufferedImage.TYPE_INT_RGB);
+            mainImgCopy.getGraphics().drawImage(mainImg, 0, 0, null);
+
+            InputStream mainInput = ImageUtils.bufferedImageToInputStream(mainImgCopy,ImageUtils.FILE_TYPE_JPG);
+
+            //上传主文件
             boolean resultBool = uploadFile(FTP_ADDRESS, FTP_PORT, FTP_USERNAME, FTP_PASSWORD,
-                    uploadFile.getInputStream(), FTP_BASE_PATH, newName);
+                    mainInput, FTP_BASE_PATH, newFileName);
+
+            //生成缩略图
+            BufferedImage thumbnail = Thumbnails.of(uploadFile.getInputStream()).scale(0.25f)
+                    .outputFormat(ImageUtils.FILE_TYPE_JPG).asBufferedImage();
+
+            //创建一个新的BufferedImage，解决图片变色的问题
+            BufferedImage thumbnailCopy = new BufferedImage(thumbnail.getWidth(),thumbnail.getHeight(),BufferedImage.TYPE_INT_RGB);
+            mainImgCopy.getGraphics().drawImage(thumbnail, 0, 0, null);
+
+            InputStream thumbnailInput = ImageUtils.bufferedImageToInputStream(thumbnailCopy,ImageUtils.FILE_TYPE_JPG);
+
+            //上传缩略图
+            boolean resultBool2 = uploadFile(FTP_ADDRESS, FTP_PORT, FTP_USERNAME, FTP_PASSWORD,
+                    thumbnailInput, FTP_THUMB_PATH_, newFileName);
+
+            //压缩图片-结束
+
             //返回结果
             if(!resultBool) {
                 result.setMessage("上传失败！");
                 result.setSuccess(false);
                 return result;
             }else {
-               /* //压缩图片
-                Thumbnails.of("/home/ftpuser/health/"+newName)
-                        .scale(0.75f)
-                        .outputQuality(0.5f).outputFormat("jpg")
-                        .toFile("/home/ftpuser/health/"+newName);
-                //在压缩生产缩略图
-                String back = newName.replace(".","_back.");
-                Thumbnails.of("/home/ftpuser/health/"+newName)
-                        .scale(0.75f)
-                        .outputQuality(0.1f).outputFormat("jpg")
-                        .toFile("/home/ftpuser/health/thumbnail/"+back);*/
-                result.setMessage(newName);
+                result.setMessage(newFileName);
                 result.setSuccess(true);
                 return result;
             }
@@ -92,9 +116,6 @@ public class ZknhFtpClientController {
     public boolean uploadFile(String ip, Integer port, String account, String passwd,
                               InputStream inputStream, String workingDir, String fileName) throws Exception{
         boolean result = false;
-        long size = inputStream.read();
-        log.info("查看工作流"+inputStream);
-        log.info("查看工作流"+size);
         // 1. 创建一个FtpClient对象
         FTPClient ftpClient = new FTPClient();
         try {
@@ -102,16 +123,12 @@ public class ZknhFtpClientController {
             ftpClient.connect(ip, port);
             // 3. 登录 ftp 服务器
             ftpClient.login(account, passwd);
-            ftpClient.enterLocalPassiveMode();
-            log.info("设置被动2");
+            //ftpClient.enterLocalPassiveMode();
             int reply = ftpClient.getReplyCode(); // 获取连接ftp 状态返回值
-            System.out.println("code : " + reply);
             if (!FTPReply.isPositiveCompletion(reply)) {
                 ftpClient.disconnect(); // 如果返回状态不再 200 ~ 300 则认为连接失败
                 return result;
             }
-            // 4. 读取本地文件
-//          FileInputStream inputStream = new FileInputStream(new File("F:\\hello.png"));
             // 5. 设置上传的路径
             ftpClient.changeWorkingDirectory(workingDir);
             // 6. 修改上传文件的格式为二进制
