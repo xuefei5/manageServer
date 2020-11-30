@@ -47,14 +47,16 @@ public class ZknhFtpClientController {
     //内部方法提供给control使用
     public Result<?> uploadPicture(MultipartFile uploadFile) {
         Result<?> result = new Result<>();
+        InputStream uploadInput = null;
+        InputStream uploadInputCopy = null;
         try {
             //获取时间戳,生成新文件名
             String newFileName = DateUtils.getDataString(DateUtils.yyyymmddhhmmss.get())+"."+ImageUtils.FILE_TYPE_JPG;
 
             //压缩图片--开始
-
+            uploadInput = uploadFile.getInputStream();
             //压缩主文件
-            BufferedImage mainImg = Thumbnails.of(uploadFile.getInputStream()).scale(0.75f)
+            BufferedImage mainImg = Thumbnails.of(uploadInput).scale(0.75f)
                     .outputFormat(ImageUtils.FILE_TYPE_JPG).asBufferedImage();
 
             //创建一个新的BufferedImage，解决图片变色的问题
@@ -66,9 +68,9 @@ public class ZknhFtpClientController {
             //上传主文件
             boolean resultBool = uploadFile(FTP_ADDRESS, FTP_PORT, FTP_USERNAME, FTP_PASSWORD,
                     mainInput, FTP_BASE_PATH, newFileName);
-
             //生成缩略图
-            BufferedImage thumbnail = Thumbnails.of(uploadFile.getInputStream()).scale(0.25f)
+            uploadInputCopy = uploadFile.getInputStream();
+            BufferedImage thumbnail = Thumbnails.of(uploadInputCopy).scale(0.75f)
                     .outputFormat(ImageUtils.FILE_TYPE_JPG).asBufferedImage();
 
             //创建一个新的BufferedImage，解决图片变色的问题
@@ -98,6 +100,13 @@ public class ZknhFtpClientController {
             result.setMessage("上传失败！");
             result.setSuccess(false);
             return result;
+        }finally {
+            try{
+                uploadInput.close();
+                uploadInputCopy.close();
+            }catch (Exception e){
+                log.error("流关闭失败");
+            }
         }
     }
 
