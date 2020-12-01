@@ -8,13 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 @Slf4j
 public class ZknhVillageConfigServiceImpl extends ServiceImpl<ZknhVillageConfigMapper, ZknhVillageConfig> implements IZknhVillageConfigService {
 
-    @Autowired
+    @Resource
     ZknhVillageConfigMapper zknhVillageConfigMapper;
 
     @Override
@@ -30,7 +31,7 @@ public class ZknhVillageConfigServiceImpl extends ServiceImpl<ZknhVillageConfigM
     }
     @Override
     /*删除微信模块*/
-    public int deleteId(int id){
+    public int deleteId(String id)throws Exception{
         return zknhVillageConfigMapper.deleteId(id);
     }
 }

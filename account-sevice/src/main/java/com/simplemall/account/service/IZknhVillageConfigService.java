@@ -22,5 +22,5 @@ public interface IZknhVillageConfigService extends IService<ZknhVillageConfig> {
     public List<ZknhVillageConfig> getVillageList(String villageId) throws Exception;
 
     /*删除微信模块*/
-    public int deleteId(int id);
+    public int deleteId(String id)throws Exception;
 }

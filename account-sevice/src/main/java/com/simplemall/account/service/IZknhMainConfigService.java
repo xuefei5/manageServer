@@ -29,7 +29,7 @@ public interface IZknhMainConfigService extends IService<ZknhMainConfig> {
     public int updateModify(String url);
 
     /* 查询微信模块*/
-    public List<ZknhMainConfig> queryModule(Integer pageNo,Integer pageSize,ZknhMainConfig zknhMainConfig);
+    public List<ZknhMainConfig> queryModule(Integer pageNo,Integer pageSize,ZknhMainConfig zknhMainConfig,String order);
 
     /*删除微信模块*/
     public int deleteId(int id);

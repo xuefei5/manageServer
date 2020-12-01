@@ -31,7 +31,7 @@ public interface ZknhMainConfigMapper extends BaseMapper<ZknhMainConfig> {
      * 查询微信模块
      * @return
      */
-    public List<ZknhMainConfig> queryModule(@Param("pageNoOne") Integer pageNo,@Param("pageSize") Integer pageSize,@Param("zknhMainConfig") ZknhMainConfig zknhMainConfig);
+    public List<ZknhMainConfig> queryModule(@Param("pageNoOne") Integer pageNo,@Param("pageSize") Integer pageSize,@Param("zknhMainConfig") ZknhMainConfig zknhMainConfig,@Param("order") String order);
 
     /**
      * 删除模块

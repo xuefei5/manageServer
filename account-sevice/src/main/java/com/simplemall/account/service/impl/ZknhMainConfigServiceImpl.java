@@ -40,10 +40,10 @@ public class ZknhMainConfigServiceImpl extends ServiceImpl<ZknhMainConfigMapper,
         return zknhMainConfigMapper.updateModify(url);
     }
     /* 查询微信模块*/
-    public List<ZknhMainConfig> queryModule(Integer pageNo,Integer pageSize,ZknhMainConfig zknhMainConfig) {
+    public List<ZknhMainConfig> queryModule(Integer pageNo,Integer pageSize,ZknhMainConfig zknhMainConfig,String order) {
         //分页
         Integer pageNoOne = (pageNo-1)*pageSize;
-        return zknhMainConfigMapper.queryModule(pageNoOne,pageSize,zknhMainConfig);
+        return zknhMainConfigMapper.queryModule(pageNoOne,pageSize,zknhMainConfig,order);
     }
     /*删除微信模块*/
     public int deleteId(int id){

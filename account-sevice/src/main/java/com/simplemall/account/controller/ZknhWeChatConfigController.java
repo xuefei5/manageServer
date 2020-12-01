@@ -250,9 +250,25 @@ public class ZknhWeChatConfigController {
      */
     @RequestMapping(value = "/queryModule", method = RequestMethod.GET)
     public Result<?> queryModule( @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhMainConfig zknhMainConfig, HttpServletRequest req){
+                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,@RequestParam(name = "order", defaultValue="desc") String order, ZknhMainConfig zknhMainConfig, HttpServletRequest req){
         Result<Map<String,Object>> result = new Result<Map<String,Object>>();
-        List<ZknhMainConfig> pageList = zknhMainConfigService.queryModule(pageNo, pageSize,zknhMainConfig);
+        String ModalName = zknhMainConfig.getModalName();//因为前端传来的是*name*,所以重新封装下
+        String modalIcon = zknhMainConfig.getModalIcon();
+        if(ModalName!=null) {
+            if ("*".equals(ModalName.substring(0,1))) {
+                ModalName = ModalName.replace("*", "");
+                zknhMainConfig.setModalName(ModalName);
+            }
+        }
+        if(modalIcon!=null) {
+            if ("*".equals(modalIcon.substring(0,1))) {
+                modalIcon = modalIcon.replace("*", "");
+                zknhMainConfig.setModalIcon(modalIcon);
+            }
+        }
+
+        log.info("aa"+ModalName+"bb"+modalIcon);
+        List<ZknhMainConfig> pageList = zknhMainConfigService.queryModule(pageNo, pageSize,zknhMainConfig,order);
         Map<String,Object> pageMap = new HashMap<>();
         pageMap.put("records",pageList);
         pageMap.put("pages",pageNo-1);
@@ -346,6 +362,43 @@ public class ZknhWeChatConfigController {
         return Result.ok("批量删除商品成功");
     }
     /**
+     * 添加村或者镇
+     * @param reqMap
+     * @return
+     */
+    @RequestMapping(value = "/addVillage", method = RequestMethod.POST)
+    public Result<?> addVillage(@RequestBody JSONObject reqMap,HttpServletRequest request){
+        Result ret = new Result();
+        try{
+            ZknhVillageConfig zknhVillageConfig = JSON.parseObject(reqMap.toJSONString(),ZknhVillageConfig.class);
+            //获取图标路径或者背景图路径
+            String iconUrl = MapUtils.getString(reqMap,"villageBack");
+            //生成主键
+            String id = UUID.randomUUID().toString().replace("-", "");
+            String username = request.getHeader(CommonConstant.X_ACCESS_TOKEN);
+            String token = JwtUtil.getUsername(username);
+            zknhVillageConfig.setDoneUserName(token);
+            zknhVillageConfig.setCreateTime(new Date());
+            if(StringUtils.isEmpty(iconUrl)){
+                if("1".equals(zknhVillageConfig.getVillageType())){
+                    iconUrl = villagesIconUrl;//此处是默认图标图
+                }
+                if("2".equals(zknhVillageConfig.getVillageType())){
+                    iconUrl = villageBackUrl;//此处是默认背景图
+                }
+            }
+            zknhVillageConfig.setVillageBack(iconUrl);
+            zknhVillageConfig.setId(id);
+
+            zknhVillageConfigService.save(zknhVillageConfig);
+            ret.success("添加成功");
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            ret.error500("操作失败");
+        }
+        return ret;
+    }
+    /**
      * 村镇查询分页
      * @return
      * @throws Exception
@@ -375,8 +428,12 @@ public class ZknhWeChatConfigController {
      * @author wangshun
      */
     @RequestMapping(value = "/editVillage", method = RequestMethod.POST)
-    public Result<ZknhVillageConfig> editVillage(@RequestBody ZknhVillageConfig zknhVillageConfig){
+    public Result<ZknhVillageConfig> editVillage(@RequestBody ZknhVillageConfig zknhVillageConfig,HttpServletRequest request){
         Result<ZknhVillageConfig> result = new Result<ZknhVillageConfig>();
+        String username = request.getHeader(CommonConstant.X_ACCESS_TOKEN);
+        String token = JwtUtil.getUsername(username);
+        zknhVillageConfig.setDoneUserName(token);
+        zknhVillageConfig.setCreateTime(new Date());
         ZknhVillageConfig update = zknhVillageConfigService.getById(zknhVillageConfig.getId());
         if(update==null) {
             result.error500("未找到对应实体");
@@ -398,19 +455,14 @@ public class ZknhWeChatConfigController {
      * @author wangshun
      */
     @RequestMapping(value = "/deleteVillage", method = RequestMethod.DELETE)
-    public Result<?> deleteVillage(@RequestParam(name="id",required=true) int id){
+    public Result<?> deleteVillage(@RequestParam(name="id",required=true) String id){
         Result<?> result = new Result<>();
-        try {
-            int delete = zknhVillageConfigService.deleteId(id);
-            if (delete > 0) {
-                return Result.ok("删除模块成功");
-            } else {
-                return result.error500("失败");
-            }
-        }catch (Exception e){
-            log.error("失败"+e);
-            return result.error500("删除失败");
+        boolean remove =  this.zknhVillageConfigService.removeById(id);
+        if(!remove) {
+            result.error500("删除失败");
+
         }
+        return Result.ok("删除商品成功");
     }
     /**
      * 批量删除镇配置

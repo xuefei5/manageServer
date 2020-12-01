@@ -22,15 +22,18 @@
     select * from zknh_main_config a
     where 1=1
    	 	<if test="zknhMainConfig.modalName !=null and zknhMainConfig.modalName !=''">
-    		and a.modal_name = #{zknhMainConfig.modalName}
+    		and a.modal_name like "%"#{zknhMainConfig.modalName}"%"
 		</if>
 		<if test="zknhMainConfig.modalIcon !=null and zknhMainConfig.modalIcon !=''">
-			and a.modal_icon = #{zknhMainConfig.modalIcon}
+			and a.modal_icon like "%"#{zknhMainConfig.modalIcon}"%"
 		</if>
 		<if test="zknhMainConfig.modalType !=null and zknhMainConfig.modalType !=''">
 			and a.modal_type = #{zknhMainConfig.modalType}
 		</if>
-   		and a.modal_type not in ("3","4") limit #{pageNoOne},#{pageSize};
+   		and a.modal_type not in ("3","4") order by a.sort ${order}
+
+		limit #{pageNoOne},#{pageSize};
+
     </select>
 
 	<!--删除模块 -->
