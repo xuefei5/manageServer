@@ -359,7 +359,7 @@ public class ZknhWeChatConfigController {
     public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
         String[] idsList = ids.split(",");
         this.zknhMainConfigService.removeByIds(Collections.singleton(idsList));
-        return Result.ok("批量删除商品成功");
+        return Result.ok("批量删除成功");
     }
     /**
      * 添加村或者镇
@@ -459,10 +459,10 @@ public class ZknhWeChatConfigController {
         Result<?> result = new Result<>();
         boolean remove =  this.zknhVillageConfigService.removeById(id);
         if(!remove) {
-            result.error500("删除失败");
+            result.error500("删除镇列表失败");
 
         }
-        return Result.ok("删除商品成功");
+        return Result.ok("删除镇列表成功");
     }
     /**
      * 批量删除镇配置
@@ -472,7 +472,7 @@ public class ZknhWeChatConfigController {
     public Result<?> deleteBatchVillage(@RequestParam(name="ids",required=true) String ids) {
         String[] idsList = ids.split(",");
         this.zknhVillageConfigService.removeByIds(Collections.singleton(idsList));
-        return Result.ok("批量删除商品成功");
+        return Result.ok("批量删除成功");
     }
 
     /**
