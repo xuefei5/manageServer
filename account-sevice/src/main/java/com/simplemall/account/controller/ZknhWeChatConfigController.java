@@ -50,7 +50,7 @@ public class ZknhWeChatConfigController {
     private IZknhVillageModelService zknhVillageModelService;
 
     private final String villagesIconUrl = "main_model_default.png";//镇的默认图标地址
-    private final String villageBackUrl = "village_model_2.png";//村的默认背景图
+    private final String villageBackUrl = "village_model_default.png";//村的默认背景图
 
     /**
      * 微信端-查询主页背景图片服务
@@ -250,7 +250,7 @@ public class ZknhWeChatConfigController {
      */
     @RequestMapping(value = "/queryModule", method = RequestMethod.GET)
     public Result<?> queryModule( @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,@RequestParam(name = "order", defaultValue="desc") String order, ZknhMainConfig zknhMainConfig, HttpServletRequest req){
+                                  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,@RequestParam(name = "order", defaultValue="asc") String order, ZknhMainConfig zknhMainConfig, HttpServletRequest req){
         Result<Map<String,Object>> result = new Result<Map<String,Object>>();
         String ModalName = zknhMainConfig.getModalName();//因为前端传来的是*name*,所以重新封装下
         String modalIcon = zknhMainConfig.getModalIcon();
@@ -358,7 +358,7 @@ public class ZknhWeChatConfigController {
     @RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
     public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
         String[] idsList = ids.split(",");
-        this.zknhMainConfigService.removeByIds(Collections.singleton(idsList));
+        this.zknhMainConfigService.removeByIds(Arrays.asList(idsList));
         return Result.ok("批量删除成功");
     }
     /**
@@ -409,8 +409,25 @@ public class ZknhWeChatConfigController {
                                          @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,ZknhVillageConfig zknhVillageConfig, HttpServletRequest req){
 
         Result<IPage<ZknhVillageConfig>> result = new Result<IPage<ZknhVillageConfig>>();
+
+        QueryWrapper<ZknhVillageConfig> queryWrapper = new QueryWrapper<ZknhVillageConfig>();
+        //拼接查询条件
+        queryWrapper.orderByAsc("sort");
+        if(null!=zknhVillageConfig.getVillageName()){
+            queryWrapper.like("village_name",zknhVillageConfig.getVillageName().replace("*",""));
+        }
+        int villageType = zknhVillageConfig.getVillageType();
+        if(1 == villageType){
+            queryWrapper.eq("village_type",villageType);
+        }
+        if(2 == villageType){
+            queryWrapper.eq("village_type",villageType);
+            queryWrapper.eq("village_parent_id",zknhVillageConfig.getVillageParentId());
+        }
+
+
         //1.镇，2.村
-        QueryWrapper<ZknhVillageConfig> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageConfig, req.getParameterMap());
+        //QueryWrapper<ZknhVillageConfig> queryWrapper = QueryGenerator.initQueryWrapper(zknhVillageConfig, req.getParameterMap());
         //TODO 外部模拟登陆临时账号，列表不显示
         //queryWrapper.ne("offer_name","_reserve_user_external");
         Page<ZknhVillageConfig> page = new Page<ZknhVillageConfig>(pageNo, pageSize);
@@ -459,10 +476,10 @@ public class ZknhWeChatConfigController {
         Result<?> result = new Result<>();
         boolean remove =  this.zknhVillageConfigService.removeById(id);
         if(!remove) {
-            result.error500("删除镇列表失败");
+            result.error500("删除失败");
 
         }
-        return Result.ok("删除镇列表成功");
+        return Result.ok("删除成功");
     }
     /**
      * 批量删除镇配置

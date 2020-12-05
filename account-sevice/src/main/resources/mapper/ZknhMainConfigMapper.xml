@@ -30,7 +30,7 @@
 		<if test="zknhMainConfig.modalType !=null and zknhMainConfig.modalType !=''">
 			and a.modal_type = #{zknhMainConfig.modalType}
 		</if>
-   		and a.modal_type not in ("3","4") order by a.sort ${order}
+   		and a.modal_type in ("1","2") order by a.sort ${order}
 
 		limit #{pageNoOne},#{pageSize};
 
