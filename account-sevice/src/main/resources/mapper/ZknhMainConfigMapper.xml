@@ -11,7 +11,7 @@
 	</select>
 
     <select id="getWeChatMainModel" resultType="com.simplemall.micro.serv.common.bean.account.ZknhMainConfig">
-		select * from  zknh_main_config where modal_type in(1,2) order by sort asc;
+		select * from  zknh_main_config where modal_type in(1,2) and status = '1' order by sort asc;
 	</select>
 	<!-- 修改主页背景图-->
 	<update id = "updateModify">
