@@ -22,8 +22,13 @@ public class Jasyptest {
 	
 	@Test
 	public void getPass() {
-		String result = encryptor.encrypt("root");
+		String result = encryptor.encrypt("1qaz!QAZ");
         System.out.println(result+"----------------"); 
         Assert.assertTrue(result.length() > 0);
+	}
+	@Test
+	public void passDecrypt(){
+		String username = encryptor.decrypt("1p17VK/C3fDoImsp3AxRWBRRoqRotwSP");
+		System.out.println("解密结果："+username);
 	}
 }
